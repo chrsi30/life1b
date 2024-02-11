@@ -1,0 +1,175 @@
+********** MODEL NAME 
+forsgren_NoBack_8C_resection
+********** MODEL NOTES
+********** MODEL STATES 
+d/dt(Ch_1)     = (px1 <  1) ?    0  : (v3_1  - (v1_1)/(Vl_1*Fh) ) 
+d/dt(Ch_2)     = (px2 <  1) ?    0  : (v3_2  - (v1_2)/(Vl_2*Fh) ) 
+d/dt(Ch_3)     = (px3 <  1) ?    0  : (v3_3  - (v1_3)/(Vl_3*Fh) ) 
+d/dt(Ch_4)     = (px4 <  1) ?    0  : (v3_4  - (v1_4)/(Vl_4*Fh) ) 
+d/dt(Ch_5)     = (px5 <  1) ?    0  : (v3_5  - (v1_5)/(Vl_5*Fh) ) 
+d/dt(Ch_6)     = (px6 <  1) ?    0  : (v3_6  - (v1_6)/(Vl_6*Fh) ) 
+d/dt(Ch_7)     = (px7 <  1) ?    0  : (v3_7  - (v1_7)/(Vl_7*Fh) ) 
+d/dt(Ch_8)     = (px8 <  1) ?    0  : (v3_8  - (v1_8)/(Vl_8*Fh) ) 
+
+d/dt(Ce)       = v5-v6 
+
+d/dt(Cp)     = ( v_hepatocyte + (v6-v5)*Vees - v4 + v8)/ (Vb*(1-Hct) ) 
+
+d/dt(Ceob)   = 0
+
+d/dt(Ndose)  = v8
+d/dt(Nbile)  = v1_1*px1 + v1_2*px2 + v1_3*px3 + v1_4*px4 + v1_5*px5 + v1_6*px6 + v1_7*px7 + v1_8*px8
+d/dt(Nurine) = v4
+
+Ch_1(0)	  = 0 
+Ch_2(0)	  = 0
+Ch_3(0)	  = 0 
+Ch_4(0)	  = 0
+Ch_5(0)	  = 0 
+Ch_6(0)	  = 0
+Ch_7(0)	  = 0 
+Ch_8(0)	  = 0
+
+Cp(0)	  = 0
+Ce(0)	  = 0 
+Ceob(0)   = 0.25
+Ndose(0)  = 0
+Nbile(0)  = 0
+Nurine(0) = 0
+
+********** MODEL PARAMETERS 
+khb_1 = 2.6e-04                 % Segment 1   -> Bile
+khb_2 = 2.6e-04                 % Segment 2   -> Bile
+khb_3 = 2.6e-04                 % Segment 3   -> Bile
+khb_4 = 2.6e-04                 % Segment 4   -> Bile
+khb_5 = 2.6e-04                 % Segment 5   -> Bile
+khb_6 = 2.6e-04                 % Segment 6   -> Bile
+khb_7 = 2.6e-04                 % Segment 7   -> Bile
+khb_8 = 2.6e-04                 % Segment 8   -> Bile
+
+kph_1 = 4.3e-3                  % Plasma -> Segment 1
+kph_2 = 4.3e-3                  % Plasma -> Segment 2
+kph_3 = 4.3e-3                  % Plasma -> Segment 3
+kph_4 = 4.3e-3                  % Plasma -> Segment 4
+kph_5 = 4.3e-3                  % Plasma -> Segment 5
+kph_6 = 4.3e-3                  % Plasma -> Segment 6
+kph_7 = 4.3e-3                  % Plasma -> Segment 7
+kph_8 = 4.3e-3                  % Plasma -> Segment 8
+
+kdiff = 1.3e-3                  % EES/blood plasma diffusion
+
+kstress = 1
+
+Vtotal = 1.43
+
+Vl_1  = 0.5               % Segment 1 volume fraction
+Vl_2  = 0.05              % Segment 2 volume fraction
+Vl_3  = 0.01              % Segment 3 volume fraction
+Vl_4  = 0.01              % Segment 4 volume fraction
+Vl_5  = 0.01              % Segment 5 volume fraction
+Vl_6  = 0.01              % Segment 6 volume fraction
+Vl_7  = 0.01              % Segment 7 volume fraction
+Vl_8  = 0.4               % Segment 8 volume fraction
+
+Vb   = 4.51                      % Blood volume 
+Bw    = 70                % Body weigth
+
+px1 = 1
+px2 = 1
+px3 = 1
+px4 = 1
+px5 = 1
+px6 = 1
+px7 = 1 
+px8 = 1
+
+x_stress = 1
+
+********** MODEL VARIABLES   
+Fb    = 0.12                      % Fraction of blood in liver volume
+Flees = 0.20                    % EES fraction in liver volume.
+Fh    = 1-(Fb+Flees)              % Fraction of heaptocyte in liver volume 
+Fs    = 0.35                      % Fraction of spleen volume with blood 
+Fsees = 0.2                     % EES fraction in spleen volume 
+Alb   =  0.9                       % Fraction of Cp not bound to albumin 
+
+Vees = 14.77                    % Extracellular total water volume
+
+Hct = 0.41                      % Hematocrit (amount of red bloodcells in plasma) 
+Rw = 4.7e3                      % Relaxivity, water
+Rbl = 7.3e3                     % Relaxivity, blood
+Rbi = 5.4e3                     % Relaxivity, bile
+Rl = 10.7e3                     % Relaxivity, liver
+Rpl = 6.9e3                     % Relaxivity, plasma
+Ksyr = 1e-3                     % 1njectionrate     
+CLr = 0.001845                  % Renal clearence
+
+dose = 25e-6*Bw                 % 25 umol/kg
+
+Global_stressor = (x_stress <  1) ?    kstress  :  1
+
+********** MODEL REACTIONS 
+v1_1 = khb_1*Ch_1*(Vl_1)*Fh*px1      % Segment 1 -> Bile ducts 
+v1_2 = khb_2*Ch_2*(Vl_2)*Fh*px2      % Segment 2 -> Bile ducts
+v1_3 = khb_3*Ch_3*(Vl_3)*Fh*px3      % Segment 3 -> Bile ducts 
+v1_4 = khb_4*Ch_4*(Vl_4)*Fh*px4      % Segment 4 -> Bile ducts
+v1_5 = khb_5*Ch_5*(Vl_5)*Fh*px5      % Segment 5 -> Bile ducts 
+v1_6 = khb_6*Ch_6*(Vl_6)*Fh*px6      % Segment 6 -> Bile ducts
+v1_7 = khb_7*Ch_7*(Vl_7)*Fh*px7      % Segment 7 -> Bile ducts 
+v1_8 = khb_8*Ch_8*(Vl_8)*Fh*px8      % Segment 8 -> Bile ducts
+
+v3_1 = kph_1*Cp*Alb*px1*Global_stressor                   % Plasma -> Segment 1
+v3_2 = kph_2*Cp*Alb*px2*Global_stressor                   % Plasma -> Segment 2
+v3_3 = kph_3*Cp*Alb*px3*Global_stressor                   % Plasma -> Segment 3
+v3_4 = kph_4*Cp*Alb*px4*Global_stressor                   % Plasma -> Segment 4
+v3_5 = kph_5*Cp*Alb*px5*Global_stressor                   % Plasma -> Segment 5
+v3_6 = kph_6*Cp*Alb*px6*Global_stressor                   % Plasma -> Segment 6
+v3_7 = kph_7*Cp*Alb*px7*Global_stressor                   % Plasma -> Segment 7
+v3_8 = kph_8*Cp*Alb*px8*Global_stressor                   % Plasma -> Segment 8
+
+total_v3 = v3_1+v3_2+v3_3+v3_4+v3_5+v3_6+v3_7+v3_8
+
+v4 = CLr*Cp*Alb                 % Plasma -> Urinar bladder 
+v5 = kdiff*Cp*Alb               % Plasma -> EES 
+v6 = kdiff*Ce                   % EES -> Plasma 
+v8 = Ceob*Ksyr                  % 1nput function
+
+vh1    = (-v3_1 )*Vl_1*px1      % OATP and back diffusion segment 1 
+vh2    = (-v3_2 )*Vl_2*px2       
+vh3    = (-v3_3 )*Vl_3*px3     
+vh4    = (-v3_4 )*Vl_4*px4      
+vh5    = (-v3_5 )*Vl_5*px5       
+vh6    = (-v3_6 )*Vl_6*px6      
+vh7    = (-v3_7 )*Vl_7*px7      
+vh8    = (-v3_8 )*Vl_8*px8      
+
+v_hepatocyte = (vh1 + vh2 + vh3 + vh4 + vh5 + vh6 + vh7 + vh8 )*Fh  % hepatocyte uptake/and diffusion back to blood via OATP
+
+Cl_1 = Ch_1*Fh*Rl + (Cp*Fb*(1-Hct)*Rbl + Ce*Flees*Rpl)*(Vl_1/Vtotal)*px1             % Estimated delta R in the segment 1 .
+Cl_2 = Ch_2*Fh*Rl + (Cp*Fb*(1-Hct)*Rbl + Ce*Flees*Rpl)*(Vl_2/Vtotal)*px2             % Estimated delta R in the segment 2 .
+Cl_3 = Ch_3*Fh*Rl + (Cp*Fb*(1-Hct)*Rbl + Ce*Flees*Rpl)*(Vl_3/Vtotal)*px3             % Estimated delta R in the segment 3 .
+Cl_4 = Ch_4*Fh*Rl + (Cp*Fb*(1-Hct)*Rbl + Ce*Flees*Rpl)*(Vl_4/Vtotal)*px4             % Estimated delta R in the segment 4 .
+Cl_5 = Ch_5*Fh*Rl + (Cp*Fb*(1-Hct)*Rbl + Ce*Flees*Rpl)*(Vl_5/Vtotal)*px5             % Estimated delta R in the segment 5 .
+Cl_6 = Ch_6*Fh*Rl + (Cp*Fb*(1-Hct)*Rbl + Ce*Flees*Rpl)*(Vl_6/Vtotal)*px6             % Estimated delta R in the segment 6 .
+Cl_7 = Ch_7*Fh*Rl + (Cp*Fb*(1-Hct)*Rbl + Ce*Flees*Rpl)*(Vl_7/Vtotal)*px7             % Estimated delta R in the segment 7 .
+Cl_8 = Ch_8*Fh*Rl + (Cp*Fb*(1-Hct)*Rbl + Ce*Flees*Rpl)*(Vl_8/Vtotal)*px8             % Estimated delta R in the segment 8 .
+
+
+%dR1s = Cp*Fs*(1-Hct)*Rbl+Ce*Fsees*Rpl                            % Estimated delta R in the spleen. 
+%dR1b = Cp*(1-Hct)*Rbl                                            % Estimated delta R in the blood vessels.
+
+C1   = Ch_1*Fh + (Cp*Fb*(1-Hct) + Ce*Flees)*(Vl_1/Vtotal)*px1             % Estimated Conc in the segment 1 . 
+C2   = Ch_2*Fh + (Cp*Fb*(1-Hct) + Ce*Flees)*(Vl_2/Vtotal)*px2             % Estimated Conc in the segment 2 . 
+C3   = Ch_3*Fh + (Cp*Fb*(1-Hct) + Ce*Flees)*(Vl_3/Vtotal)*px3             % Estimated Conc in the segment 3 . 
+C4   = Ch_4*Fh + (Cp*Fb*(1-Hct) + Ce*Flees)*(Vl_4/Vtotal)*px4             % Estimated Conc in the segment 4 . 
+C5   = Ch_5*Fh + (Cp*Fb*(1-Hct) + Ce*Flees)*(Vl_5/Vtotal)*px5             % Estimated Conc in the segment 5 . 
+C6   = Ch_6*Fh + (Cp*Fb*(1-Hct) + Ce*Flees)*(Vl_6/Vtotal)*px6             % Estimated Conc in the segment 6 . 
+C7   = Ch_7*Fh + (Cp*Fb*(1-Hct) + Ce*Flees)*(Vl_7/Vtotal)*px7             % Estimated Conc in the segment 7 . 
+C8   = Ch_8*Fh + (Cp*Fb*(1-Hct) + Ce*Flees)*(Vl_8/Vtotal)*px8             % Estimated Conc in the segment 8 . 
+
+Cs   = Cp*Fs*(1-Hct) + Ce*Fsees                                    % Estimated Conc in the spleen. 
+
+********** MODEL FUNCTIONS 
+********** MODEL EVENTS 
+Syringe_done = ge(Ndose, dose),Ceob,0                         % Stops the injection
+********** MODEL MATLAB FUNCTIONS 
